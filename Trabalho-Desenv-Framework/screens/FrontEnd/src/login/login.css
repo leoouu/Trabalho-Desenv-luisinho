@@ -1,0 +1,3 @@
+/* estilos específicos da tela de login. Estilos comuns (body, navbar, container, cards) estão em ../app/styles.css */
+.login-container { height:100vh; }
+.card { border-radius:12px; box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
