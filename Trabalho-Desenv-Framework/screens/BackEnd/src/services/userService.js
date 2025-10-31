@@ -6,7 +6,7 @@ const JWT_SECRET = 'PenaltiFoiPIX'
 
 class UserService {
     async register(userData) {
-        const { nome, email, senha } = userData
+        const { cargo, email, senha } = userData
 
         const usuarioExistente = await userRepository.findByEmail(email)
         if (usuarioExistente) {
@@ -15,7 +15,7 @@ class UserService {
 
         const senhaHash = await bcrypt.hash(senha, 10)
         const novoUsuario = await userRepository.create({
-            nome,
+            cargo,
             email,
             senha: senhaHash
         })
@@ -24,9 +24,16 @@ class UserService {
     }
 
     async login(loginData) {
-        const { email, senha } = loginData
+        // accept identifier, username or email
+        const identifier = loginData.identifier || loginData.username || loginData.email || loginData.ra
+        const { senha } = loginData
 
-        const usuario = await userRepository.findByEmail(email)
+        if (!identifier || !senha) {
+            throw new Error('Credenciais Invalidas')
+        }
+
+        // try to find by email or ra
+        const usuario = await userRepository.findByEmailOrRa(identifier)
         if (!usuario) {
             throw new Error('Credenciais Invalidas')
         }
@@ -37,7 +44,7 @@ class UserService {
         }
 
         const token = jwt.sign(
-            { nomeUsuario: usuario.nome },
+            { ra: usuario.ra, email: usuario.email, cargo: usuario.cargo },
             JWT_SECRET,
             { expiresIn: '1h' }
         )

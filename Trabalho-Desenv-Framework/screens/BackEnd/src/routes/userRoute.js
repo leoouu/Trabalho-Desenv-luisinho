@@ -5,7 +5,7 @@ const router = express.Router()
 
 /**
  * @swagger
- * /auth/register:
+ * /user:
  *   post:
  *     summary: Registra novo usuário
  *     tags: [Autenticação]
@@ -15,26 +15,34 @@ const router = express.Router()
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - cargo
+ *               - email
+ *               - senha
  *             properties:
- *               nome:
+ *               cargo:
  *                 type: string
+ *                 enum: [admin, professor, aluno]
+ *                 description: Cargo do usuário (admin, professor ou aluno)
  *               email:
  *                 type: string
+ *                 format: email
  *               senha:
  *                 type: string
+ *                 description: Senha do usuário
  *     responses:
  *       201:
  *         description: Usuário criado com sucesso
  *       400:
  *         description: Usuário já existe
  */
-router.post('/register', userController.register.bind(userController))
+router.post('/', userController.register.bind(userController))
 
 /**
  * @swagger
- * /auth/login:
+ * /user/login:
  *   post:
- *     summary: Realiza login do usuário
+ *     summary: Realiza login do usuário (por email ou RA)
  *     tags: [Autenticação]
  *     requestBody:
  *       required: true
@@ -42,11 +50,23 @@ router.post('/register', userController.register.bind(userController))
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - identifier
+ *               - senha
  *             properties:
+ *               identifier:
+ *                 type: string
+ *                 description: Email ou RA do usuário
+ *               ra:
+ *                 type: string
+ *                 description: (opcional) alias para identifier
  *               email:
  *                 type: string
+ *                 format: email
+ *                 description: (opcional) alias para identifier
  *               senha:
  *                 type: string
+ *                 description: Senha do usuário
  *     responses:
  *       200:
  *         description: Login realizado com sucesso

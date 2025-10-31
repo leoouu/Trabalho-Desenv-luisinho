@@ -2,13 +2,13 @@ const {DataTypes} = require('sequelize')
 const sequelize = require('../config/database')
 
 const Usuario = sequelize.define('Usuario', {
-    id: {
+    ra: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    nome: {
-        type: DataTypes.STRING,
+    cargo: {
+        type: DataTypes.ENUM('admin', 'professor', 'aluno'),
         allowNull: false
     },
     email: {
