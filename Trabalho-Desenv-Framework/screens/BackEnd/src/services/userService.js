@@ -6,7 +6,7 @@ const JWT_SECRET = 'PenaltiFoiPIX'
 
 class UserService {
     async register(userData) {
-        const { nome, email, senha } = userData
+        const { cargo, email, senha } = userData
 
         const usuarioExistente = await userRepository.findByEmail(email)
         if (usuarioExistente) {
@@ -15,7 +15,7 @@ class UserService {
 
         const senhaHash = await bcrypt.hash(senha, 10)
         const novoUsuario = await userRepository.create({
-            nome,
+            cargo,
             email,
             senha: senhaHash
         })
@@ -24,9 +24,16 @@ class UserService {
     }
 
     async login(loginData) {
-        const { email, senha } = loginData
+        // accept identifier, username or email
+        const identifier = loginData.identifier || loginData.username || loginData.email || loginData.ra
+        const { senha } = loginData
 
-        const usuario = await userRepository.findByEmail(email)
+        if (!identifier || !senha) {
+            throw new Error('Credenciais Invalidas')
+        }
+
+        // try to find by email or ra
+        const usuario = await userRepository.findByEmailOrRa(identifier)
         if (!usuario) {
             throw new Error('Credenciais Invalidas')
         }
@@ -37,12 +44,46 @@ class UserService {
         }
 
         const token = jwt.sign(
-            { nomeUsuario: usuario.nome },
+            { ra: usuario.ra, email: usuario.email, cargo: usuario.cargo },
             JWT_SECRET,
             { expiresIn: '1h' }
         )
 
         return { token }
+    }
+
+    async findAll() {
+        return await userRepository.findAll()
+    }
+
+    async findByRa(ra) {
+        const user = await userRepository.findByRa(ra)
+        if (!user) {
+            throw new Error('Usuário não encontrado')
+        }
+        return user
+    }
+
+    async updateByRa(ra, data) {
+        // allow updating cargo, email, senha
+        const updateData = { }
+        if (data.cargo) updateData.cargo = data.cargo
+        if (data.email) updateData.email = data.email
+        if (data.senha) updateData.senha = await bcrypt.hash(data.senha, 10)
+
+        const updated = await userRepository.updateByRa(ra, updateData)
+        if (!updated) {
+            throw new Error('Usuário não encontrado')
+        }
+        return updated
+    }
+
+    async deleteByRa(ra) {
+        const deleted = await userRepository.deleteByRa(ra)
+        if (!deleted) {
+            throw new Error('Usuário não encontrado')
+        }
+        return { message: 'Usuário removido com sucesso' }
     }
 }
 
