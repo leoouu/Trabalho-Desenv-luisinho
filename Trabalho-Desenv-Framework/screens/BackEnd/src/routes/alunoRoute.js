@@ -1,8 +1,15 @@
-const express = require('express')
-const alunoController = require('../controllers/alunoController')
-const authenticationToken = require('../middlewares/auth')
+const express = require('express');
+const alunoController = require('../controllers/alunoController');
+const authenticationToken = require('../middlewares/auth');
 
-const router = express.Router()
+const router = express.Router();
+
+/**
+ * @swagger
+ * tags:
+ *   name: Alunos
+ *   description: API para gerenciamento de alunos.
+ */
 
 /**
  * @swagger
@@ -11,23 +18,47 @@ const router = express.Router()
  *      Aluno:
  *          type: object
  *          required:
- *              - id
- *              - ra
  *              - nome
+ *              - semestre
+ *              - ativo
+ *              - curso
+ *              - cpf
+ *              - nascimento
+ *              - ra
  *          properties:
  *              id:
  *                  type: integer
- *                  description: Identificador unico do aluno
+ *                  description: Identificador único do aluno.
  *              nome:
  *                  type: string
- *                  description: Nome do aluno
+ *                  description: Nome do aluno.
+ *              semestre:
+ *                  type: integer
+ *                  description: Semestre atual do aluno.
+ *              ativo:
+ *                  type: boolean
+ *                  description: Indica se o aluno está ativo.
+ *              curso:
+ *                  type: string
+ *                  description: Curso em que o aluno está matriculado.
+ *              cpf:
+ *                  type: string
+ *                  description: CPF do aluno.
+ *              nascimento:
+ *                  type: string
+ *                  description: Data de nascimento do aluno.
  *              ra:
  *                  type: integer
- *                  description: Número da matrícula
+ *                  description: RA do aluno, chave estrangeira para usuário.
  *          example:
  *              id: 1
- *              nome: Fulano
- *              ra: 123    
+ *              nome: "Fulano de Tal"
+ *              semestre: 3
+ *              ativo: true
+ *              curso: "Engenharia de Software"
+ *              cpf: "123.456.789-00"
+ *              nascimento: "2000-01-01"
+ *              ra: 12345
  */
 
 /**
@@ -36,6 +67,8 @@ const router = express.Router()
  *  get:
  *      summary: Retorna todos os alunos
  *      tags: [Alunos]
+ *      security:
+ *        - bearerAuth: []
  *      responses:
  *          200:
  *              description: Lista de alunos
@@ -46,14 +79,16 @@ const router = express.Router()
  *                          items:
  *                              $ref: '#/components/schemas/Aluno'
  */
-router.get('/', authenticationToken, alunoController.getAll.bind(alunoController))
+router.get('/', authenticationToken, alunoController.getAll.bind(alunoController));
 
 /**
  * @swagger
  * /aluno:
  *  post:
- *      summary: Cadastros de aluno
+ *      summary: Cadastra um novo aluno
  *      tags: [Alunos]
+ *      security:
+ *        - bearerAuth: []
  *      requestBody:
  *          required: true
  *          content:
@@ -63,24 +98,36 @@ router.get('/', authenticationToken, alunoController.getAll.bind(alunoController
  *                      properties:
  *                          nome:
  *                              type: string
+ *                          semestre:
+ *                              type: integer
+ *                          ativo:
+ *                              type: boolean
+ *                          curso:
+ *                              type: string
+ *                          cpf:
+ *                              type: string
+ *                          nascimento:
+ *                              type: string
  *                          ra:
  *                              type: integer
  *      responses:
  *          201:
- *              description: Cadastro de alunos
+ *              description: Aluno cadastrado com sucesso
  *              content:
  *                  application/json:
  *                      schema:
  *                          $ref: '#/components/schemas/Aluno'
  */
-router.post('/', authenticationToken, alunoController.create.bind(alunoController))
+router.post('/', authenticationToken, alunoController.create.bind(alunoController));
 
 /**
  * @swagger
  * /aluno/{id}:
  *  put:
- *      summary: Atualização de aluno
+ *      summary: Atualiza um aluno existente
  *      tags: [Alunos]
+ *      security:
+ *        - bearerAuth: []
  *      parameters:
  *          - in: path
  *            name: id
@@ -96,10 +143,27 @@ router.post('/', authenticationToken, alunoController.create.bind(alunoControlle
  *                      properties:
  *                          nome:
  *                              type: string
+ *                          semestre:
+ *                              type: integer
+ *                          ativo:
+ *                              type: boolean
+ *                          curso:
+ *                              type: string
+ *                          cpf:
+ *                              type: string
+ *                          nascimento:
+ *                              type: string
  *                          ra:
  *                              type: integer
+ *      responses:
+ *          200:
+ *              description: Aluno atualizado com sucesso
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Aluno'
  */
-router.put('/:id', authenticationToken, alunoController.update.bind(alunoController))
+router.put('/:id', authenticationToken, alunoController.update.bind(alunoController));
 
 /**
  * @swagger
@@ -107,6 +171,8 @@ router.put('/:id', authenticationToken, alunoController.update.bind(alunoControl
  *  delete:
  *      summary: Remove um aluno
  *      tags: [Alunos]
+ *      security:
+ *        - bearerAuth: []
  *      parameters:
  *          - in: path
  *            name: id
@@ -115,8 +181,8 @@ router.put('/:id', authenticationToken, alunoController.update.bind(alunoControl
  *              type: integer
  *      responses:
  *          200:
- *              description: Aluno removido
+ *              description: Aluno removido com sucesso
  */
-router.delete('/:id', authenticationToken, alunoController.delete.bind(alunoController))
+router.delete('/:id', authenticationToken, alunoController.delete.bind(alunoController));
 
-module.exports = router
+module.exports = router;

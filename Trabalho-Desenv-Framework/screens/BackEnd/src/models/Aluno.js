@@ -1,5 +1,6 @@
 const {DataTypes} = require('sequelize')
 const sequelize = require('../config/database')
+const Usuario = require('./User')
 
 const Aluno = sequelize.define('Aluno', {
     id: {
@@ -7,15 +8,42 @@ const Aluno = sequelize.define('Aluno', {
         primaryKey: true,
         autoIncrement: true
     },
-    ra: {
+    nome: {
+        type: DataTypes.STRING,
+        allowNull:false
+    },
+    semestre: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    ativo: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+    },
+    curso: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    cpf: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true
     },
-    nome: {
+    nascimento: {
         type: DataTypes.STRING,
-        allowNull:false
+        allowNull: false,
+    },
+    ra: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Usuario,
+            key: 'ra'
+        }
     }
 })
+
+// Define the association
+Aluno.belongsTo(Usuario, { foreignKey: 'ra' })
 
 module.exports = Aluno
