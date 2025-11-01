@@ -1,5 +1,7 @@
 const express = require('express')
 const userController = require('../controllers/userController')
+const authenticationToken = require('../middlewares/auth')
+const { requireAdmin } = require('../middlewares/auth')
 
 const router = express.Router()
 
@@ -9,6 +11,8 @@ const router = express.Router()
  *   post:
  *     summary: Registra novo usuário
  *     tags: [Autenticação]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -36,7 +40,7 @@ const router = express.Router()
  *       400:
  *         description: Usuário já existe
  */
-router.post('/', userController.register.bind(userController))
+router.post('/', authenticationToken, requireAdmin, userController.register.bind(userController))
 
 /**
  * @swagger
@@ -74,5 +78,142 @@ router.post('/', userController.register.bind(userController))
  *         description: Credenciais inválidas
  */
 router.post('/login', userController.login.bind(userController))
+
+/**
+ * @swagger
+ * /user/by-ra:
+ *   get:
+ *     summary: Retorna um usuário por RA
+ *     tags: [Autenticação]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: ra
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: RA do usuário
+ *     responses:
+ *       200:
+ *         description: Usuário encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 ra:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 cargo:
+ *                   type: string
+ *       401:
+ *         description: Token inválido
+ *       403:
+ *         description: Acesso negado
+ */
+router.get('/by-ra', authenticationToken, userController.getByRa.bind(userController))
+
+/**
+ * @swagger
+ * /user:
+ *   get:
+ *     summary: Retorna todos os usuários (admin)
+ *     tags: [Autenticação]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de usuários
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   ra:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                   cargo:
+ *                     type: string
+ *       401:
+ *         description: Token inválido
+ *       403:
+ *         description: Acesso negado
+ */
+router.get('/', authenticationToken, requireAdmin, userController.getAll.bind(userController))
+
+/**
+ * @swagger
+ * /user:
+ *   put:
+ *     summary: Atualiza um usuário por RA (admin)
+ *     tags: [Autenticação]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: ra
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: RA do usuário a ser atualizado
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               cargo:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               senha:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Usuário atualizado
+ *       400:
+ *         description: Dados inválidos
+ *       404:
+ *         description: Usuário não encontrado
+ *       401:
+ *         description: Token inválido
+ *       403:
+ *         description: Acesso negado
+ */
+router.put('/', authenticationToken, requireAdmin, userController.updateByRa.bind(userController))
+
+/**
+ * @swagger
+ * /user:
+ *   delete:
+ *     summary: Remove um usuário por RA (admin)
+ *     tags: [Autenticação]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: ra
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: RA do usuário a ser removido
+ *     responses:
+ *       200:
+ *         description: Usuário removido com sucesso
+ *       404:
+ *         description: Usuário não encontrado
+ *       401:
+ *         description: Token inválido
+ *       403:
+ *         description: Acesso negado
+ */
+router.delete('/', authenticationToken, requireAdmin, userController.deleteByRa.bind(userController))
 
 module.exports = router

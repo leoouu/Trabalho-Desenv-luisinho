@@ -51,6 +51,40 @@ class UserService {
 
         return { token }
     }
+
+    async findAll() {
+        return await userRepository.findAll()
+    }
+
+    async findByRa(ra) {
+        const user = await userRepository.findByRa(ra)
+        if (!user) {
+            throw new Error('Usuário não encontrado')
+        }
+        return user
+    }
+
+    async updateByRa(ra, data) {
+        // allow updating cargo, email, senha
+        const updateData = { }
+        if (data.cargo) updateData.cargo = data.cargo
+        if (data.email) updateData.email = data.email
+        if (data.senha) updateData.senha = await bcrypt.hash(data.senha, 10)
+
+        const updated = await userRepository.updateByRa(ra, updateData)
+        if (!updated) {
+            throw new Error('Usuário não encontrado')
+        }
+        return updated
+    }
+
+    async deleteByRa(ra) {
+        const deleted = await userRepository.deleteByRa(ra)
+        if (!deleted) {
+            throw new Error('Usuário não encontrado')
+        }
+        return { message: 'Usuário removido com sucesso' }
+    }
 }
 
 module.exports = new UserService()

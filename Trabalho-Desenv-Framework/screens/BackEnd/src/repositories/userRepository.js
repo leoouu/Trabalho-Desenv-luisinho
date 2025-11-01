@@ -19,6 +19,24 @@ class UserRepository {
         })
     }
 
+    async findAll() {
+        return await Usuario.findAll()
+    }
+
+    async findByRa(ra) {
+        return await Usuario.findOne({ where: { ra } })
+    }
+
+    async updateByRa(ra, data) {
+        const [affected] = await Usuario.update(data, { where: { ra } })
+        if (affected === 0) return null
+        return await Usuario.findOne({ where: { ra } })
+    }
+
+    async deleteByRa(ra) {
+        return await Usuario.destroy({ where: { ra } })
+    }
+
     async create(usuario) {
         return await Usuario.create(usuario)
     }
