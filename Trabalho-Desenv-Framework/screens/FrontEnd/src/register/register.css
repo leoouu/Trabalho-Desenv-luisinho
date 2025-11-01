@@ -18,7 +18,7 @@ body {
 
 .register-card {
   width: 100%;
-  max-width: 450px;
+  max-width: 650px; /* 🔹 AUMENTADO (antes 450px) */
   background: #fff;
   border-radius: 1rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);

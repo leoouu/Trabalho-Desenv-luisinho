@@ -59,6 +59,34 @@
             </div>
         </div>
 
+                <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="senha" class="form-label">Senha</label>
+            <input
+              type="password"
+              id="senha"
+              class="form-control"
+              required
+              minlength="8"
+              autocomplete="new-password"
+              aria-describedby="senhaHelp"
+            >
+            <div id="senhaHelp" class="form-text">Mínimo 8 caracteres.</div>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label for="confirmSenha" class="form-label">Confirmar senha</label>
+            <input
+              type="password"
+              id="confirmSenha"
+              class="form-control"
+              required
+              minlength="8"
+              autocomplete="new-password"
+            >
+          </div>
+        </div>
+
         <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
 
         <div class="signup-text mt-3">
