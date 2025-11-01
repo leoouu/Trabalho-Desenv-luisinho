@@ -26,7 +26,7 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label for="nome" class="form-label">Nome</label>
-                <input type="text" id="nome" class="form-control" required>
+                <input type="text" id="nome" class="form-control" required autocomplete="name">
             </div>
 
             <div class="col-md-6 mb-3">
@@ -37,43 +37,50 @@
 
         <div class="row">
             <div class="col-md-6 mb-3">
-                <label for="cpf" class="form-label">CPF</label>
-                <input type="text" id="cpf" class="form-control" maxlength="14" required>
+                <label for="email" class="form-label">E-mail</label>
+                <input type="email" id="email" class="form-control" required autocomplete="email" placeholder="seu@exemplo.com">
             </div>
 
             <div class="col-md-6 mb-3">
-                <label for="nascimento" class="form-label">Data de Nascimento</label>
-                <input type="date" id="nascimento" class="form-control" required>
+                <label for="cpf" class="form-label">CPF</label>
+                <input type="text" id="cpf" class="form-control" maxlength="14" required autocomplete="off" placeholder="000.000.000-00">
             </div>
         </div>
 
         <div class="row">
             <div class="col-md-6 mb-3">
+                <label for="nascimento" class="form-label">Data de Nascimento</label>
+                <input type="date" id="nascimento" class="form-control" required>
+            </div>
+
+            <div class="col-md-6 mb-3">
                 <label for="semestre" class="form-label">Semestre</label>
                 <input type="number" id="semestre" class="form-control" min="1" max="10" required>
             </div>
+        </div>
 
+        <div class="row">
             <div class="col-md-6 mb-3">
                 <label for="curso" class="form-label">Curso</label>
                 <input type="text" id="curso" class="form-control" required>
             </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="senha" class="form-label">Senha</label>
+              <input
+                type="password"
+                id="senha"
+                class="form-control"
+                required
+                minlength="8"
+                autocomplete="new-password"
+                aria-describedby="senhaHelp"
+              >
+              <div id="senhaHelp" class="form-text">Mínimo 8 caracteres.</div>
+            </div>
         </div>
 
-                <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="senha" class="form-label">Senha</label>
-            <input
-              type="password"
-              id="senha"
-              class="form-control"
-              required
-              minlength="8"
-              autocomplete="new-password"
-              aria-describedby="senhaHelp"
-            >
-            <div id="senhaHelp" class="form-text">Mínimo 8 caracteres.</div>
-          </div>
-
+        <div class="row">
           <div class="col-md-6 mb-3">
             <label for="confirmSenha" class="form-label">Confirmar senha</label>
             <input
