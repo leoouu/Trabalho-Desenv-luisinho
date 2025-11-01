@@ -1,4 +1,5 @@
 const Task = require('../models/task');
+const Disciplina = require('../models/Disciplina');
 
 class TaskRepository {
     async createTask(data) {
@@ -6,11 +7,21 @@ class TaskRepository {
     }
 
     async getAllTasks() {
-        return await Task.findAll();
+        return await Task.findAll({
+            include: [{
+                model: Disciplina,
+                attributes: ['id', 'nome']
+            }]
+        });
     }
 
     async getTaskById(id) {
-        return await Task.findByPk(id);
+        return await Task.findByPk(id, {
+            include: [{
+                model: Disciplina,
+                attributes: ['id', 'nome']
+            }]
+        });
     }
 
     async updateTask(id, data) {

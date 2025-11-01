@@ -1,68 +1,61 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('loginForm');
-
-  const existingToken = localStorage.getItem('token');
-  if (existingToken) {
-    console.log('[INFO] Usuário já logado. Redirecionando...');
-    window.location.href = '../app/nav.html';
-    return;
-  }
-
-  if (!form) {
-    console.error('[ERRO] Formulário de login não encontrado!');
-    return;
-  }
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const usernameInput = document.getElementById('username');
+    const loginForm = document.getElementById('login-form');
+    const errorMessage = document.getElementById('error-message');
+    const errorText = document.getElementById('error-text');
+    const togglePasswordBtn = document.getElementById('toggle-password');
     const passwordInput = document.getElementById('password');
+    const togglePasswordIcon = document.getElementById('toggle-password-icon');
 
-    const identifier = usernameInput?.value.trim();
-    const senha = passwordInput?.value;
+    // Toggle mostrar/ocultar senha
+    togglePasswordBtn.addEventListener('click', () => {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        // Alternar ícone
+        if (type === 'text') {
+            togglePasswordIcon.classList.remove('bi-eye');
+            togglePasswordIcon.classList.add('bi-eye-slash');
+        } else {
+            togglePasswordIcon.classList.remove('bi-eye-slash');
+            togglePasswordIcon.classList.add('bi-eye');
+        }
+    });
 
-    if (!identifier || !senha) {
-      alert('Por favor, preencha usuário e senha.');
-      return;
-    }
+    loginForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        errorMessage.classList.add('d-none');
 
-    const btn = form.querySelector('button[type="submit"]');
-    btn.disabled = true;
-    btn.innerText = 'Entrando...';
+        const identifier = document.getElementById('identifier').value;
+        const password = document.getElementById('password').value;
 
-    try {
-      console.log('[INFO] Enviando login para API...');
-      const response = await fetch('http://localhost:3000/user/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier, senha })
-      });
+        try {
+            const response = await fetch('http://localhost:3000/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    identifier: identifier,
+                    senha: password
+                })
+            });
 
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        console.warn('[WARN] Falha no login:', data);
-        throw new Error(data.message || data.error || 'Erro ao efetuar login');
-      }
-
-      if (!data.token) {
-        throw new Error('Token JWT não recebido. Verifique o backend.');
-      }
-
-      localStorage.setItem('token', data.token);
-      if (data.user) localStorage.setItem('user', JSON.stringify(data.user));
-
-      console.log('[OK] Login bem-sucedido! Redirecionando...');
-      window.location.href = '../app/nav.html';
-
-    } catch (err) {
-      console.error('[ERRO LOGIN]', err);
-      alert(err.message || 'Erro desconhecido ao tentar logar.');
-
-    } finally {
-      btn.disabled = false;
-      btn.innerText = 'Entrar';
-    }
-  });
+            if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                
+                // Redirecionar para a home
+                window.location.href = '../home/home.html';
+            } else {
+                const errorData = await response.json();
+                errorText.textContent = errorData.message || 'Falha no login. Verifique suas credenciais.';
+                errorMessage.classList.remove('d-none');
+            }
+        } catch (error) {
+            errorText.textContent = 'Ocorreu um erro. Tente novamente mais tarde.';
+            errorMessage.classList.remove('d-none');
+            console.error('Login error:', error);
+        }
+    });
 });

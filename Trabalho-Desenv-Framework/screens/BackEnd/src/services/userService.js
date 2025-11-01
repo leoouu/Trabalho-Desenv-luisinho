@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const userRepository = require('../repositories/userRepository')
+const Aluno = require('../models/Aluno')
+const Professor = require('../models/Professor')
 
 const JWT_SECRET = 'PenaltiFoiPIX'
 
@@ -43,13 +45,33 @@ class UserService {
             throw new Error('Credenciais Invalidas')
         }
 
+        // Buscar nome do usuário baseado no cargo
+        let nome = null
+        if (usuario.cargo === 'aluno') {
+            const aluno = await Aluno.findOne({ where: { ra: usuario.ra } })
+            nome = aluno ? aluno.nome : null
+        } else if (usuario.cargo === 'professor') {
+            const professor = await Professor.findOne({ where: { ra: usuario.ra } })
+            nome = professor ? professor.nome : null
+        } else if (usuario.cargo === 'admin') {
+            nome = 'Administrador'
+        }
+
         const token = jwt.sign(
             { ra: usuario.ra, email: usuario.email, cargo: usuario.cargo },
             JWT_SECRET,
             { expiresIn: '1h' }
         )
 
-        return { token }
+        return { 
+            token,
+            user: {
+                ra: usuario.ra,
+                email: usuario.email,
+                cargo: usuario.cargo,
+                nome: nome
+            }
+        }
     }
 
     async findAll() {

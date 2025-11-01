@@ -1,4 +1,5 @@
 const Disciplina = require('../models/Disciplina');
+const Professor = require('../models/Professor');
 
 class DisciplinaRepository {
     async create(data) {
@@ -6,11 +7,21 @@ class DisciplinaRepository {
     }
 
     async findAll() {
-        return await Disciplina.findAll();
+        return await Disciplina.findAll({
+            include: [{
+                model: Professor,
+                attributes: ['id', 'nome']
+            }]
+        });
     }
 
     async findById(id) {
-        return await Disciplina.findByPk(id);
+        return await Disciplina.findByPk(id, {
+            include: [{
+                model: Professor,
+                attributes: ['id', 'nome']
+            }]
+        });
     }
 
     async update(id, data) {

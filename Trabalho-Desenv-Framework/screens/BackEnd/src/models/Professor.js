@@ -22,7 +22,7 @@ const Professor = sequelize.define('Professor', {
     },
     ra: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
             model: Usuario,
             key: 'ra'
@@ -31,6 +31,11 @@ const Professor = sequelize.define('Professor', {
 })
 
 // Define the association
-Professor.belongsTo(Usuario, { foreignKey: 'ra' })
+Professor.belongsTo(Usuario, { 
+    foreignKey: {
+        name: 'ra',
+        allowNull: true
+    }
+})
 
 module.exports = Professor

@@ -1,6 +1,7 @@
 const express = require('express');
 const alunoController = require('../controllers/alunoController');
 const authenticationToken = require('../middlewares/auth');
+const { requireAdmin, requireAdminOrProfessor } = require('../middlewares/auth');
 
 const router = express.Router();
 
@@ -24,7 +25,6 @@ const router = express.Router();
  *              - curso
  *              - cpf
  *              - nascimento
- *              - ra
  *          properties:
  *              id:
  *                  type: integer
@@ -49,7 +49,7 @@ const router = express.Router();
  *                  description: Data de nascimento do aluno.
  *              ra:
  *                  type: integer
- *                  description: RA do aluno, chave estrangeira para usuário.
+ *                  description: RA do aluno, chave estrangeira para usuário (opcional).
  *          example:
  *              id: 1
  *              nome: "Fulano de Tal"
@@ -65,7 +65,7 @@ const router = express.Router();
  * @swagger
  * /aluno:
  *  get:
- *      summary: Retorna todos os alunos
+ *      summary: Retorna todos os alunos (Admin/Professor)
  *      tags: [Alunos]
  *      security:
  *        - bearerAuth: []
@@ -78,8 +78,10 @@ const router = express.Router();
  *                          type: array
  *                          items:
  *                              $ref: '#/components/schemas/Aluno'
+ *          403:
+ *              description: Acesso restrito a administradores e professores
  */
-router.get('/', authenticationToken, alunoController.getAll.bind(alunoController));
+router.get('/', authenticationToken, requireAdminOrProfessor, alunoController.getAll.bind(alunoController));
 
 /**
  * @swagger
@@ -118,7 +120,7 @@ router.get('/', authenticationToken, alunoController.getAll.bind(alunoController
  *                      schema:
  *                          $ref: '#/components/schemas/Aluno'
  */
-router.post('/', authenticationToken, alunoController.create.bind(alunoController));
+router.post('/', authenticationToken, requireAdmin,alunoController.create.bind(alunoController));
 
 /**
  * @swagger
@@ -163,7 +165,7 @@ router.post('/', authenticationToken, alunoController.create.bind(alunoControlle
  *                      schema:
  *                          $ref: '#/components/schemas/Aluno'
  */
-router.put('/:id', authenticationToken, alunoController.update.bind(alunoController));
+router.put('/:id', authenticationToken, requireAdmin,alunoController.update.bind(alunoController));
 
 /**
  * @swagger
@@ -183,6 +185,6 @@ router.put('/:id', authenticationToken, alunoController.update.bind(alunoControl
  *          200:
  *              description: Aluno removido com sucesso
  */
-router.delete('/:id', authenticationToken, alunoController.delete.bind(alunoController));
+router.delete('/:id', authenticationToken, requireAdmin, alunoController.delete.bind(alunoController));
 
 module.exports = router;

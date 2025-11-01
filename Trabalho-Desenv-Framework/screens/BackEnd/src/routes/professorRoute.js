@@ -21,7 +21,6 @@ const { requireAdmin } = require('../middlewares/auth');
  *         - nome
  *         - cpf
  *         - telefone
- *         - ra
  *       properties:
  *         id:
  *           type: integer
@@ -37,7 +36,7 @@ const { requireAdmin } = require('../middlewares/auth');
  *           description: Telefone do professor.
  *         ra:
  *           type: integer
- *           description: RA do professor, chave estrangeira para usuário.
+ *           description: RA do professor, chave estrangeira para usuário (opcional).
  *       example:
  *         id: 1
  *         nome: "Dr. João da Silva"
@@ -60,6 +59,10 @@ const { requireAdmin } = require('../middlewares/auth');
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - nome
+ *               - cpf
+ *               - telefone
  *             properties:
  *               nome:
  *                 type: string
@@ -69,6 +72,7 @@ const { requireAdmin } = require('../middlewares/auth');
  *                 type: string
  *               ra:
  *                 type: integer
+ *                 description: RA do usuário associado (opcional)
  *     responses:
  *       201:
  *         description: Professor criado com sucesso.

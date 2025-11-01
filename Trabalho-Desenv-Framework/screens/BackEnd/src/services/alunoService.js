@@ -14,10 +14,10 @@ class AlunoService {
     }
 
     async create(alunoData) {
-        const { nome, ra } = alunoData
+        const { nome } = alunoData
         
-        if (!nome || !ra) {
-            throw new Error('Nome e RA são obrigatórios')
+        if (!nome) {
+            throw new Error('Nome é obrigatório')
         }
 
         return await alunoRepository.create(alunoData)

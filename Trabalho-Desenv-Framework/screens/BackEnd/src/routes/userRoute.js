@@ -74,6 +74,30 @@ router.post('/', authenticationToken, requireAdmin, userController.register.bind
  *     responses:
  *       200:
  *         description: Login realizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   description: JWT token para autenticação
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     ra:
+ *                       type: integer
+ *                       description: RA do usuário
+ *                     email:
+ *                       type: string
+ *                       description: Email do usuário
+ *                     cargo:
+ *                       type: string
+ *                       enum: [admin, professor, aluno]
+ *                       description: Cargo do usuário
+ *                     nome:
+ *                       type: string
+ *                       description: Nome do usuário (buscado da tabela Aluno/Professor ou 'Administrador' para admin)
  *       401:
  *         description: Credenciais inválidas
  */

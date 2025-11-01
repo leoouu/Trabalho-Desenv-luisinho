@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const disciplinaController = require('../controllers/disciplinaController');
 const authenticationToken = require('../middlewares/auth');
-const { requireAdmin } = require('../middlewares/auth');
+const { requireAdmin, requireAdminOrProfessor } = require('../middlewares/auth');
 
 /**
  * @swagger
@@ -81,7 +81,7 @@ router.post('/', authenticationToken, requireAdmin, disciplinaController.create)
  *       403:
  *         description: Acesso restrito.
  */
-router.get('/', authenticationToken, requireAdmin, disciplinaController.findAll);
+router.get('/', authenticationToken, requireAdminOrProfessor, disciplinaController.findAll);
 
 /**
  * @swagger
@@ -107,7 +107,7 @@ router.get('/', authenticationToken, requireAdmin, disciplinaController.findAll)
  *       403:
  *         description: Acesso restrito.
  */
-router.get('/:id', authenticationToken, requireAdmin, disciplinaController.findById);
+router.get('/:id', authenticationToken, requireAdminOrProfessor, disciplinaController.findById);
 
 /**
  * @swagger
