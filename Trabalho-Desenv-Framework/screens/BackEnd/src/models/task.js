@@ -1,8 +1,8 @@
 const {DataTypes} = require('sequelize')
 const sequelize = require('../config/database')
-const Usuario = require('./User')
+const Disciplina = require('./Disciplina')
 
-const Aluno = sequelize.define('Aluno', {
+const Task = sequelize.define('Task', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -12,38 +12,33 @@ const Aluno = sequelize.define('Aluno', {
         type: DataTypes.STRING,
         allowNull:false
     },
-    semestre: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
-    ativo: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-    },
-    curso: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    cpf: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
-    },
-    nascimento: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    ra: {
+    disciplina_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Usuario,
-            key: 'ra'
+            model: Disciplina,
+            key: 'id'
         }
+    },
+    tipo: {
+        type: DataTypes.ENUM('atividade', 'prova'),
+        allowNull: false,
+    },
+    abertura: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    fechamento: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    nota_maxima: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
     }
 })
 
 // Define the association
-Aluno.belongsTo(Usuario, { foreignKey: 'ra' })
+Task.belongsTo(Disciplina, { foreignKey: 'disciplina_id' })
 
-module.exports = Aluno
+module.exports = Task

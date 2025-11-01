@@ -2,7 +2,7 @@ const {DataTypes} = require('sequelize')
 const sequelize = require('../config/database')
 const Usuario = require('./User')
 
-const Aluno = sequelize.define('Aluno', {
+const Professor = sequelize.define('Professor', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -12,24 +12,11 @@ const Aluno = sequelize.define('Aluno', {
         type: DataTypes.STRING,
         allowNull:false
     },
-    semestre: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
-    ativo: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-    },
-    curso: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
     cpf: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
     },
-    nascimento: {
+    telefone: {
         type: DataTypes.STRING,
         allowNull: false,
     },
@@ -44,6 +31,6 @@ const Aluno = sequelize.define('Aluno', {
 })
 
 // Define the association
-Aluno.belongsTo(Usuario, { foreignKey: 'ra' })
+Professor.belongsTo(Usuario, { foreignKey: 'ra' })
 
-module.exports = Aluno
+module.exports = Professor

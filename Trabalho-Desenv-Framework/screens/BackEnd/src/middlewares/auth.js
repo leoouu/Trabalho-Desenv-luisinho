@@ -33,5 +33,19 @@ const requireAdmin = (req, res, next) => {
     next()
 }
 
+const requireAdminOrProfessor = (req, res, next) => {
+    if (!req.user) {
+        return res.status(401).json({ message: 'Token Inválido' });
+    }
+
+    const allowedRoles = ['admin', 'professor'];
+    if (!allowedRoles.includes(req.user.cargo)) {
+        return res.status(403).json({ message: 'Acesso restrito a administradores e professores' });
+    }
+
+    next();
+};
+
 module.exports = authenticationToken
 module.exports.requireAdmin = requireAdmin
+module.exports.requireAdminOrProfessor = requireAdminOrProfessor

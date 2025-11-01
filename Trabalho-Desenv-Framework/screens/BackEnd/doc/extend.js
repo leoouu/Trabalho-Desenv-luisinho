@@ -6,6 +6,12 @@ const swaggerOptions =  {
             version: '1.0.0',
             description: 'API de gerenciamento de alunos'
         },
+        servers: [
+            {
+                url: 'http://localhost:3000',
+                description: 'Servidor de desenvolvimento'
+            }
+        ],
         components: {
             securitySchemes: {
                 bearerAuth: {
@@ -17,15 +23,9 @@ const swaggerOptions =  {
         },
         security: [{
             bearerAuth: []
-        }],
-        servers: [
-            {
-                url: 'http://localhost:3000',
-                description: 'Servidor de desenvolvimento'
-            }
-        ]
+        }]
     },
     apis: ['./src/routes/*.js']
-}
+};
 
 module.exports = swaggerOptions
