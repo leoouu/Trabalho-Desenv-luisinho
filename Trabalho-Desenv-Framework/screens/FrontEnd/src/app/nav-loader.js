@@ -3,7 +3,8 @@
   const placeholder = document.getElementById('nav-placeholder');
   if (!placeholder) return;
   try {
-    const res = await fetch('./nav.html');
+    // carregar nav.html a partir da pasta app (caminho relativo à página)
+    const res = await fetch('../app/nav.html');
     const html = await res.text();
     placeholder.innerHTML = html;
 
@@ -13,11 +14,13 @@
     const base = idx >= 0 ? p.slice(0, idx) : p.slice(0, p.lastIndexOf('/'));
 
     // conecta links com data-page
+    // path onde as páginas do front-end estão dentro do repositório
+    const pagesRoot = '/screens/FrontEnd/src/';
     Array.from(placeholder.querySelectorAll('[data-page]')).forEach(function(el) {
       el.addEventListener('click', function(e) {
         e.preventDefault();
         const target = el.getAttribute('data-page') || '';
-        const url = base + '/screens/' + target;
+        const url = base + pagesRoot + target;
         location.href = url;
       });
     });

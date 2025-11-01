@@ -1,10 +1,10 @@
 // alunos.ts
-interface Aluno { nome: string; ra: string; semestre: string; prova: string; nota: string | number }
+interface Aluno { nome: string; ra: string; semestre: string; curso: string }
 
 const defaultAlunos: Aluno[] = [
-  { nome: 'João Silva', ra: '20231001', semestre: '1º Semestre', prova: 'Matemática', nota: 8.5 },
-  { nome: 'Maria Souza', ra: '20231002', semestre: '2º Semestre', prova: 'História', nota: 9.0 },
-  { nome: 'Carlos Lima', ra: '20231003', semestre: '1º Semestre', prova: 'Português', nota: 7.0 }
+  { nome: 'João Silva', ra: '20231001', semestre: '1º Semestre', curso: 'Engenharia' },
+  { nome: 'Maria Souza', ra: '20231002', semestre: '2º Semestre', curso: 'Medicina' },
+  { nome: 'Carlos Lima', ra: '20231003', semestre: '1º Semestre', curso: 'Direito' }
 ];
 
 function getAlunos(): Aluno[] {
@@ -24,10 +24,10 @@ function renderAlunos(filter = '') {
   const tbody = document.getElementById('alunosBody') as HTMLTableSectionElement;
   if (!tbody) return;
   if (filtered.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Nenhum aluno encontrado</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Nenhum aluno encontrado</td></tr>';
     return;
   }
-  tbody.innerHTML = filtered.map(a => `<tr><td>${a.nome}</td><td>${a.ra}</td><td>${a.semestre}</td><td>${a.prova}</td><td>${a.nota}</td></tr>`).join('');
+  tbody.innerHTML = filtered.map(a => `<tr><td>${a.nome}</td><td>${a.ra}</td><td>${a.semestre}</td><td>${a.curso}</td></tr>`).join('');
 }
 
 document.addEventListener('DOMContentLoaded', () => {

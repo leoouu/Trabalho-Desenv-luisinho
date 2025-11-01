@@ -2,8 +2,13 @@
 (async function(){
   const placeholder = document.getElementById('header-placeholder');
   if (!placeholder) return;
+
+  let res;
   try {
-  const res = await fetch('../header/header.html');
+    res = await fetch('../header/header.html');
+    if (!res.ok) res = await fetch('../../header/header.html');
+    if (!res.ok) res = await fetch('../../../header/header.html');
+
     const html = await res.text();
     placeholder.innerHTML = html;
   } catch (err) {

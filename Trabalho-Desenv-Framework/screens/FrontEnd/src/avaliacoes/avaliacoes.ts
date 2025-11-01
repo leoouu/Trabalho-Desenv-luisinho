@@ -18,27 +18,60 @@ function saveProvas(p: Prova[]) { localStorage.setItem('provas', JSON.stringify(
 
 function renderAvaliacoes(filter = '') {
   const q = filter.toLowerCase().trim();
+  // Prefer atividades salvas, se houver
+  const rawAt = localStorage.getItem('atividades');
+  const tbody = document.getElementById('provasBody') as HTMLElement;
+  if (!tbody) return;
+
+  if (rawAt) {
+    const atividades = JSON.parse(rawAt) as any[];
+    const filtered = atividades.filter(a => {
+      if (!q) return true;
+      return (a.nome && a.nome.toLowerCase().includes(q)) || (a.disciplina && a.disciplina.toLowerCase().includes(q));
+    });
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Nenhuma avaliação encontrada</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(a => `
+      <tr>
+        <td>${a.nome}</td>
+        <td>${a.disciplina || '-'}</td>
+        <td>${a.tipo}</td>
+        <td>${a.abertura || '-'}</td>
+        <td>-</td>
+        <td class="text-center">-</td>
+      </tr>
+    `).join('');
+    return;
+  }
+
+  // fallback para provas legadas
   const provas = getProvas();
   const filtered = provas.filter(p => {
     if (!q) return true;
     return (p.aluno && p.aluno.toLowerCase().includes(q)) || (p.prova && p.prova.toLowerCase().includes(q));
   });
-  const tbody = document.getElementById('provasBody') as HTMLElement;
-  if (!tbody) return;
+
   if (filtered.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Nenhuma avaliação encontrada</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Nenhuma avaliação encontrada</td></tr>';
     return;
   }
+
   tbody.innerHTML = filtered.map(p => `
     <tr>
-      <td>${p.aluno}</td>
       <td>${p.prova}</td>
-      <td>${p.semestre}</td>
+      <td>${p.semestre || '-'}</td>
+      <td>prova</td>
+      <td>-</td>
       <td>${p.nota}</td>
       <td class="text-center"><i class="bi bi-pencil-square action-icon" data-aluno="${p.aluno}" data-prova="${p.prova}"></i></td>
     </tr>
   `).join('');
-  // attach events
+
+  // attach events (somente para provas legadas)
   Array.from(document.querySelectorAll('.action-icon')).forEach(el => {
     el.addEventListener('click', () => {
       const aluno = (el as HTMLElement).getAttribute('data-aluno') || '';
