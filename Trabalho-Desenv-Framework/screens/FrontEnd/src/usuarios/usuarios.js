@@ -5,7 +5,18 @@ let raParaDeletar = null;
 let modoEdicao = false;
 
 // Elementos DOM
---
+const searchInput = document.getElementById('search-input');
+const filterCargo = document.getElementById('filter-cargo');
+const btnLimparFiltros = document.getElementById('btn-limpar-filtros');
+const usuariosTableBody = document.getElementById('usuarios-table-body');
+const userModal = new bootstrap.Modal(document.getElementById('userModal'));
+const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+const btnNovoUsuario = document.getElementById('btn-novo-usuario');
+const btnSalvarUsuario = document.getElementById('btn-salvar-usuario');
+const btnConfirmarDelete = document.getElementById('btn-confirmar-delete');
+const userForm = document.getElementById('user-form');
+const formError = document.getElementById('form-error');
+
 // Inicialização
 document.addEventListener('DOMContentLoaded', () => {
     verificarAutenticacao();
